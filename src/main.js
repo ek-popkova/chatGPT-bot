@@ -1,24 +1,26 @@
-import { Telegraf } from 'telegraf';
+import { Telegraf, session } from 'telegraf';
 import { message } from 'telegraf/filters';
 import config from 'config';
-import {code} from 'telegraf/format'
 import { telegramManager } from './managers/telegramManager.js';
-
 
 const bot = new Telegraf(config.get('TELEGRAM_TOKEN'));
 
-bot.on(message('voice'), async (ctx) => {
-    try {
-        await telegramManager.voiceMessageTextAnswer(ctx);          
-    }
-    catch (e) {
-        console.log('Error while answering the voice message', e.message);
-        await ctx.reply(code('The internal error occured, please, try again later.'));
-    }   
-});
+bot.use(session());
 
 bot.command('start', async (ctx) => {
-    await ctx.reply(code("Hi! I can send your voice messages to ChatGPT, just record your question here and I'll ask chatGPT for you."));
+    await telegramManager.initalCommand(ctx, "Hi! I can send your messages to ChatGPT, just record your question as a voice or text message here and I'll ask chatGPT for you.");
+});
+
+bot.command('new', async (ctx) => {
+    await telegramManager.initalCommand(ctx, "New dialog created. I'm waiting for your voice or message");
+});
+
+bot.on(message('voice'), async (ctx) => {
+    await telegramManager.voiceMessageTextAnswer(ctx);  
+});
+
+bot.on(message('text'), async (ctx) => {
+    await telegramManager.textMessageTextAnswer(ctx);  
 });
 
 bot.launch();
