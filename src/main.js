@@ -16,7 +16,7 @@ bot.command('new', async (ctx) => {
 });
 
 bot.on(message('voice'), async (ctx) => {
-    await telegramManager.voiceMessageTextAnswer(ctx);  
+    await telegramManager.voiceMessageVoiceAnswer(ctx);  
 });
 
 bot.on(message('text'), async (ctx) => {
