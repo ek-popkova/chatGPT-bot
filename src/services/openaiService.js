@@ -48,6 +48,22 @@ class OpenAIService {
             console.log("Error while transcripting the voice from file", filepath, e.message);
         }
     }
+
+    async createImage(description) {
+        try {
+            const response = await this.openai.createImage({
+                prompt: description,
+                size: '512x512',
+                n: 1
+            });
+            console.log(response.data.data[0].url);
+            return response.data.data[0].url;
+        }
+        catch (e) {
+            console.log("Error while getting an image from chatGPT", e.message);
+        }
+        
+    }
 }
 
 export const openaiService = new OpenAIService(config.get('OPENAI_KEY'));

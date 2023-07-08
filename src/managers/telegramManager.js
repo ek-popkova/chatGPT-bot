@@ -51,7 +51,26 @@ class TelegramManager {
             await this.getTextAnswer(ctx, ctx.message.text)
         }
         catch (e) {
-            console.log('Error while answering the voice message', e.message);
+            console.log('Error while answering the text message', e.message);
+            await ctx.reply(code('The internal error occured, please, try again later.'));
+        }          
+    }
+
+    async textMessagePictureAnswer(ctx) {
+        try {
+            await ctx.reply(code('Your question was recieved, we are waiting for the server response...'));
+            const url = await openaiService.createImage(ctx.message.text);
+            ctx.replyWithPhoto({ url })
+                .then(() => {
+                    console.log('Photo sent successfully');
+                })
+                .catch((error) => {
+                    console.error('Error sending photo:', error);
+                });
+            //await this.getTextAnswer(ctx, ctx.message.text)
+        }
+        catch (e) {
+            console.log('Error while generation a picture for message', e.message);
             await ctx.reply(code('The internal error occured, please, try again later.'));
         }          
     }

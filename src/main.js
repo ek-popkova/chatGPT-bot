@@ -19,8 +19,12 @@ bot.on(message('voice'), async (ctx) => {
     await telegramManager.voiceMessageVoiceAnswer(ctx);  
 });
 
+// bot.on(message('text'), async (ctx) => {
+//     await telegramManager.textMessageTextAnswer(ctx);
+// });
+
 bot.on(message('text'), async (ctx) => {
-    await telegramManager.textMessageTextAnswer(ctx);  
+    await telegramManager.textMessagePictureAnswer(ctx);
 });
 
 bot.launch();
