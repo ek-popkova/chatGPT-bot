@@ -1,12 +1,12 @@
 import { Configuration, OpenAIApi } from 'openai'
 import config from 'config';
 import { createReadStream } from 'fs';
-import { removeFile } from "./helpers.js";
+import { removeFile } from "../helpers/fileHelper.js";
 
 const speachModel = 'whisper-1';
 const chatModel = 'gpt-3.5-turbo';
 
-class OpenAI {
+class OpenAIService {
     roles = {
         ASSISTANT: 'assistant',
         USER: 'user',
@@ -25,6 +25,7 @@ class OpenAI {
                 model: chatModel,
                 messages
             })
+            console.log("Successfully retrieted a response from ChatGPT");
             return response.data.choices[0].message;
         }
         catch (e)
@@ -39,6 +40,7 @@ class OpenAI {
                 createReadStream(filepath),
                 speachModel
             );
+            console.log("Successfully transcripted a message using openai API");
             removeFile(filepath);
             return response.data.text;
         }
@@ -48,4 +50,4 @@ class OpenAI {
     }
 }
 
-export const openai = new OpenAI(config.get('OPENAI_KEY'));
+export const openaiService = new OpenAIService(config.get('OPENAI_KEY'));

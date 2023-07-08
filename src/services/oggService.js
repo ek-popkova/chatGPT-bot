@@ -4,11 +4,11 @@ import installer from '@ffmpeg-installer/ffmpeg'
 import { createWriteStream } from 'fs'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
-import { removeFile } from "./helpers.js";
+import { removeFile } from "../helpers/fileHelper.js";
 
 const _dirname = dirname(fileURLToPath(import.meta.url));
 
-class OggConverter {
+class OggService {
     constructor() { 
         ffmpeg.setFfmpegPath(installer.path);
     }
@@ -22,6 +22,7 @@ class OggConverter {
                     .output(outputPath)
                     .on('end', () => {
                         removeFile(input);
+                        console.log("Successfully converted to .mp3 .ogg from path", input);
                         resolve(outputPath);
                     })
                     .on('error', (err) => reject(err.message))
@@ -35,7 +36,7 @@ class OggConverter {
 
     async create(url, filename) { 
         try {
-            const oggPath = resolve(_dirname, '../voices', `${filename}.ogg`);
+            const oggPath = resolve(_dirname, '../../voices', `${filename}.ogg`);
             const response = await axios({
                 method: 'get',
                 url,
@@ -44,7 +45,10 @@ class OggConverter {
             return new Promise(resolve => {
                 const stream = createWriteStream(oggPath);
                 response.data.pipe(stream);
-                stream.on('finish', () => resolve(oggPath));
+                stream.on('finish', () => {
+                    console.log("Successfully downloaded .ogg from telegram to", filename);
+                    resolve(oggPath);
+                });
             })      
         }
         catch (e) {
@@ -54,4 +58,4 @@ class OggConverter {
 
 }
 
-export const ogg = new OggConverter();
+export const oggService = new OggService();
